@@ -1,9 +1,10 @@
-use std::io;
+mod app;
+mod game;
+mod text_widget;
+mod tui;
 
 use app::App;
-
-mod app;
-mod tui;
+use std::io;
 
 fn main() -> io::Result<()> {
     let mut terminal = tui::init()?;
