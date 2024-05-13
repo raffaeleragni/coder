@@ -21,6 +21,9 @@ impl StatefulWidget for GameDisplay {
 }
 
 fn game_into_spans(game: &Game) -> Vec<Span> {
+    if game.done {
+        return vec![Span::from(game.target_text.clone()).bold().green()];
+    }
     let check = game.typed_text.as_str().chars().collect::<Vec<char>>();
     let target = game.target_text.as_str();
     let mut result = Vec::<Span>::new();

@@ -44,6 +44,12 @@ impl App {
             self.exit = true
         } else if let KeyCode::Char(c) = key.code {
             self.game.key_pressed(c);
+        } else if let KeyCode::Backspace = key.code {
+            self.game.undo();
+        }
+
+        if self.game.done {
+            self.exit = true;
         }
     }
 }
