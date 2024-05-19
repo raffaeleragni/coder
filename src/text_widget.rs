@@ -33,7 +33,7 @@ fn game_into_spans(game: &Game) -> Vec<Span> {
         } else if check[i] == c {
             result.push(Span::from(c.to_string()).bold().white());
         } else {
-            result.push(Span::from(c.to_string()).bold().red());
+            result.push(Span::from(c.to_string()).bold().red().underlined());
         }
     }
     result
