@@ -17,7 +17,7 @@ impl StatefulWidget for GameDisplay {
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         let spans: Vec<Span> = (&*state).into();
         let text: Text = vec![Line::from(spans)].into();
-        Paragraph::new(text).centered().render(area, buf);
+        Paragraph::new(text).render(area, buf);
     }
 }
 

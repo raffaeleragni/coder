@@ -1,7 +1,11 @@
 use std::io;
 
 use crossterm::event::{self, KeyCode, KeyEvent, KeyEventKind};
-use ratatui::Frame;
+use ratatui::{
+    layout::{Constraint, Direction, Layout},
+    widgets::{Block, Borders, Padding, Widget},
+    Frame,
+};
 
 use crate::{game::Game, text_widget::GameDisplay, tui};
 
@@ -28,7 +32,16 @@ impl App {
     }
 
     fn render(&mut self, frame: &mut Frame) {
-        frame.render_stateful_widget(GameDisplay, frame.size(), &mut self.game);
+        let l = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints([Constraint::Percentage(50), Constraint::Min(1)])
+            .split(frame.size());
+        let block = Block::default()
+            .borders(Borders::all())
+            .padding(Padding::uniform(1));
+        let inner = block.inner(l[0]);
+        block.render(l[0], frame.buffer_mut());
+        frame.render_stateful_widget(GameDisplay, inner, &mut self.game);
     }
 
     fn events(&mut self) -> io::Result<()> {
