@@ -63,7 +63,7 @@ mod test {
         assert_eq!(game.score(), 1);
         assert!(!game.done());
     }
-    
+
     #[test]
     fn test_undo() {
         let mut game = Game::new("test");
@@ -92,5 +92,4 @@ mod test {
         assert_eq!(game.score(), 4);
         assert!(game.done());
     }
-
 }
