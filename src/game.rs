@@ -4,7 +4,6 @@ pub struct Game {
     pub typed_text: String,
     done: bool,
     score: i32,
-    position: usize,
 }
 
 impl Game {
@@ -14,34 +13,36 @@ impl Game {
             typed_text: String::new(),
             done: false,
             score: 0,
-            position: 0,
         }
     }
 
     pub fn key_pressed(&mut self, k: char) {
         self.typed_text.push(k);
-        if let Some(c) = self.target_text.chars().nth(self.position) {
-            if c == k {
+        if let Some(same) = self.is_last_char_correct() {
+            if same {
                 self.score += 1;
             } else {
                 self.score -= 1;
             }
         }
-        self.position += 1;
-        self.done = self.typed_text.eq(&self.target_text);
+        self.update_done();
     }
 
     pub fn undo(&mut self) {
-        self.position -= 1;
-        if let Some(c) = self.target_text.chars().nth(self.position) {
-            if let Some(k) = self.typed_text.chars().nth(self.position) {
-                if c == k {
-                    self.score -= 1;
-                }
-            }
+        if let Some(true) = self.is_last_char_correct() {
+            self.score -= 1;
         }
         self.typed_text.pop();
-        self.done = self.typed_text.eq(&self.target_text);
+        self.update_done();
+    }
+
+    fn is_last_char_correct(&mut self) -> Option<bool> {
+        if let Some(c) = self.target_text.chars().nth(self.typed_text.len() - 1) {
+            if let Some(k) = self.typed_text.chars().nth(self.typed_text.len() - 1) {
+                return Some(c == k);
+            }
+        }
+        None
     }
 
     pub fn score(&self) -> i32 {
@@ -50,6 +51,10 @@ impl Game {
 
     pub fn done(&self) -> bool {
         self.done
+    }
+
+    fn update_done(&mut self) {
+        self.done = self.typed_text.eq(&self.target_text);
     }
 }
 
