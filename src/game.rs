@@ -29,6 +29,9 @@ impl Game {
     }
 
     pub fn undo(&mut self) {
+        if self.typed_text.is_empty() {
+            return;
+        }
         if let Some(true) = self.is_last_matching() {
             self.score -= 1;
         }
@@ -65,6 +68,14 @@ mod test {
     #[test]
     fn test_initial() {
         let game = Game::new("test");
+        assert_eq!(game.score(), 0);
+        assert!(!game.done());
+    }
+
+    #[test]
+    fn test_undo_from_initial() {
+        let mut game = Game::new("test");
+        game.undo();
         assert_eq!(game.score(), 0);
         assert!(!game.done());
     }

@@ -1,6 +1,6 @@
 use ratatui::{
     buffer::Buffer,
-    layout::Rect,
+    layout::{Constraint, Direction, Layout, Rect},
     style::Stylize,
     text::{Line, Span, Text},
     widgets::{Paragraph, StatefulWidget, Widget},
@@ -17,7 +17,16 @@ impl StatefulWidget for GameDisplay {
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
         let spans: Vec<Span> = (&*state).into();
         let text: Text = vec![Line::from(spans)].into();
-        Paragraph::new(text).render(area, buf);
+        let l = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(vec![Constraint::Percentage(50), Constraint::Min(1)])
+            .split(area);
+        Paragraph::new(text).render(l[0], buf);
+        Paragraph::new(Line::from(vec![
+            "score: ".into(),
+            state.score().to_string().into(),
+        ]))
+        .render(l[1], buf);
     }
 }
 
