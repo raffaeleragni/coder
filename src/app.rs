@@ -61,7 +61,7 @@ impl App {
             self.game.undo();
         }
 
-        if self.game.done {
+        if self.game.done() {
             self.exit = true;
         }
     }

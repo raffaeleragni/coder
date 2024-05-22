@@ -23,7 +23,7 @@ impl StatefulWidget for GameDisplay {
 
 impl<'a> From<&Game> for Vec<Span<'a>> {
     fn from(game: &Game) -> Self {
-        if game.done {
+        if game.done() {
             return vec![Span::from(game.target_text.clone()).bold().green()];
         }
         let check = game.typed_text.as_str().chars().collect::<Vec<char>>();
