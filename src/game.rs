@@ -18,7 +18,7 @@ impl Game {
 
     pub fn key_pressed(&mut self, k: char) {
         self.typed_text.push(k);
-        if let Some(same) = self.is_last_char_correct() {
+        if let Some(same) = self.is_last_matching() {
             if same {
                 self.score += 1;
             } else {
@@ -29,14 +29,14 @@ impl Game {
     }
 
     pub fn undo(&mut self) {
-        if let Some(true) = self.is_last_char_correct() {
+        if let Some(true) = self.is_last_matching() {
             self.score -= 1;
         }
         self.typed_text.pop();
         self.update_done();
     }
 
-    fn is_last_char_correct(&mut self) -> Option<bool> {
+    fn is_last_matching(&mut self) -> Option<bool> {
         if let Some(c) = self.target_text.chars().nth(self.typed_text.len() - 1) {
             if let Some(k) = self.typed_text.chars().nth(self.typed_text.len() - 1) {
                 return Some(c == k);
