@@ -23,6 +23,8 @@ impl Game {
         if let Some(c) = self.target_text.chars().nth(self.position) {
             if c == k {
                 self.score += 1;
+            } else {
+                self.score -= 1;
             }
         }
         self.position += 1;
@@ -30,8 +32,14 @@ impl Game {
     }
 
     pub fn undo(&mut self) {
-        self.score -= 1;
         self.position -= 1;
+        if let Some(c) = self.target_text.chars().nth(self.position) {
+            if let Some(k) = self.typed_text.chars().nth(self.position) {
+                if c == k {
+                    self.score -= 1;
+                }
+            }
+        }
         self.typed_text.pop();
         self.done = self.typed_text.eq(&self.target_text);
     }
@@ -75,6 +83,14 @@ mod test {
 
     #[test]
     fn test_wrong_key() {
+        let mut game = Game::new("test");
+        game.key_pressed('a');
+        assert_eq!(game.score(), -1);
+        assert!(!game.done());
+    }
+
+    #[test]
+    fn test_wrong_key_and_undo() {
         let mut game = Game::new("test");
         game.key_pressed('a');
         game.undo();
