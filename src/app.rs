@@ -7,19 +7,22 @@ use ratatui::{
     Frame,
 };
 
-use crate::{game::Game, text_widget::GameDisplay, tui};
+use crate::{game::Game, loader::Loader, text_widget::GameDisplay, tui};
 
 #[derive(Debug)]
 pub struct App {
     exit: bool,
     game: Game,
+    loader: Loader,
 }
 
 impl App {
     pub fn new() -> Self {
+        let mut loader = Loader::default();
         Self {
             exit: false,
-            game: Game::new("println!(\"Hello World\");"),
+            game: Game::new(loader.load_new_text()),
+            loader
         }
     }
 
@@ -62,7 +65,7 @@ impl App {
         }
 
         if self.game.done() {
-            self.exit = true;
+            self.game = Game::new(self.loader.load_new_text());
         }
     }
 }
