@@ -1,7 +1,10 @@
 static TEXTS: &[&str] = &[
-    "println!(\"Hello World\");",
     "fn main() {}",
+    "println!(\"Hello World\");",
     "std::thread::spawn(|| {});",
+    "#[derive(Default, Debug)]",
+    "self.counter += 1;",
+    "let mut game = Game::new(\"test\");",
 ];
 
 #[derive(Default, Debug)]
