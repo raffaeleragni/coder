@@ -10,24 +10,44 @@ use crate::game::Game;
 
 #[derive(Debug, Default)]
 pub struct GameDisplay;
+#[derive(Debug, Default)]
+pub struct HistoryDisplay;
 
 impl StatefulWidget for GameDisplay {
     type State = Game;
 
     fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
-        let spans: Vec<Span> = (&*state).into();
-        let text: Text = vec![Line::from(spans)].into();
+        render_single_line(state, area, buf);
+    }
+}
+
+impl StatefulWidget for HistoryDisplay {
+    type State = Vec<Game>;
+
+    fn render(self, area: Rect, buf: &mut Buffer, state: &mut Self::State) {
+        let line_constraints = state
+            .iter()
+            .map(|_| Constraint::Length(1))
+            .collect::<Vec<Constraint>>();
         let l = Layout::default()
             .direction(Direction::Vertical)
-            .constraints(vec![Constraint::Percentage(50), Constraint::Min(1)])
+            .constraints(line_constraints)
             .split(area);
-        Paragraph::new(text).render(l[0], buf);
-        Paragraph::new(Line::from(vec![
-            "score: ".into(),
-            state.score().to_string().into(),
-        ]))
-        .render(l[1], buf);
+        for (i, line) in state.iter_mut().enumerate() {
+            render_single_line(line, l[i], buf);
+        }
     }
+}
+
+fn render_single_line(line: &mut Game, area: Rect, buf: &mut Buffer) {
+    let spans: Vec<Span> = (&*line).into();
+    let text: Text = vec![Line::from(spans)].into();
+    let l = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(vec![Constraint::Length(3), Constraint::Min(1)])
+        .split(area);
+    Paragraph::new(Line::from(vec![line.score().to_string().into()])).render(l[0], buf);
+    Paragraph::new(text).render(l[1], buf);
 }
 
 impl<'a> From<&Game> for Vec<Span<'a>> {

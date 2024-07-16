@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Game {
     pub target_text: String,
     pub typed_text: String,

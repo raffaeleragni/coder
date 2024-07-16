@@ -3,15 +3,20 @@ use std::io;
 use crossterm::event::{self, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
     layout::{Constraint, Direction, Layout},
-    widgets::{Block, Borders, Padding, Widget},
     Frame,
 };
 
-use crate::{game::Game, loader::Loader, text_widget::GameDisplay, tui};
+use crate::{
+    game::Game,
+    loader::Loader,
+    text_widget::{GameDisplay, HistoryDisplay},
+    tui,
+};
 
 #[derive(Debug)]
 pub struct App {
     exit: bool,
+    history: Vec<Game>,
     game: Game,
     loader: Loader,
 }
@@ -21,8 +26,9 @@ impl App {
         let mut loader = Loader::default();
         Self {
             exit: false,
+            history: Vec::new(),
             game: Game::new(loader.load_new_text()),
-            loader
+            loader,
         }
     }
 
@@ -37,14 +43,10 @@ impl App {
     fn render(&mut self, frame: &mut Frame) {
         let l = Layout::default()
             .direction(Direction::Vertical)
-            .constraints([Constraint::Percentage(50), Constraint::Min(1)])
+            .constraints([Constraint::Percentage(50), Constraint::Length(1)])
             .split(frame.size());
-        let block = Block::default()
-            .borders(Borders::all())
-            .padding(Padding::uniform(1));
-        let inner = block.inner(l[0]);
-        block.render(l[0], frame.buffer_mut());
-        frame.render_stateful_widget(GameDisplay, inner, &mut self.game);
+        frame.render_stateful_widget(HistoryDisplay, l[0], &mut self.history);
+        frame.render_stateful_widget(GameDisplay, l[1], &mut self.game);
     }
 
     fn events(&mut self) -> io::Result<()> {
@@ -65,6 +67,7 @@ impl App {
         }
 
         if self.game.done() {
+            self.history.push(self.game.clone());
             self.game = Game::new(self.loader.load_new_text());
         }
     }
