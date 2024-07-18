@@ -1,9 +1,19 @@
+use std::time::Instant;
+
 #[derive(Debug, Clone)]
 pub struct Game {
     pub target_text: String,
     pub typed_text: String,
+    pub score_events: Vec<ScoreEvent>,
     done: bool,
     score: i32,
+}
+
+#[derive(Debug, Clone)]
+pub struct ScoreEvent {
+    pub stamp: Instant,
+    pub points: i32,
+    pub total: i32,
 }
 
 impl Game {
@@ -11,6 +21,7 @@ impl Game {
         Self {
             target_text: target_text.to_string(),
             typed_text: String::new(),
+            score_events: vec![],
             done: false,
             score: 0,
         }
@@ -18,13 +29,20 @@ impl Game {
 
     pub fn key_pressed(&mut self, k: char) {
         self.typed_text.push(k);
+        let mut points = 0;
         if let Some(same) = self.is_last_matching() {
             if same {
-                self.score += 1;
+                points = 1;
             } else {
-                self.score -= 1;
+                points = -1;
             }
         }
+        self.score += points;
+        self.score_events.push(ScoreEvent {
+            stamp: Instant::now(),
+            points,
+            total: self.score,
+        });
         self.update_done();
     }
 

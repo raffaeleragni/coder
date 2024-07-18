@@ -2,8 +2,7 @@ use std::io;
 
 use crossterm::event::{self, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
-    layout::{Constraint, Direction, Layout},
-    Frame,
+    layout::{Constraint, Direction, Layout}, widgets::{Chart, Widget}, Frame
 };
 
 use crate::{
@@ -43,10 +42,15 @@ impl App {
     fn render(&mut self, frame: &mut Frame) {
         let l = Layout::default()
             .direction(Direction::Vertical)
-            .constraints([Constraint::Percentage(50), Constraint::Length(1)])
+            .constraints([
+                Constraint::Percentage(50),
+                Constraint::Length(1),
+                Constraint::Percentage(50),
+            ])
             .split(frame.size());
         frame.render_stateful_widget(HistoryDisplay, l[0], &mut self.history);
         frame.render_stateful_widget(GameDisplay, l[1], &mut self.game);
+        Chart::new(vec![]).render(l[2], frame.buffer_mut());
     }
 
     fn events(&mut self) -> io::Result<()> {
