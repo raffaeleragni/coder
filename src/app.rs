@@ -2,7 +2,9 @@ use std::io;
 
 use crossterm::event::{self, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::{
-    layout::{Constraint, Direction, Layout}, widgets::{Chart, Widget}, Frame
+    layout::{Constraint, Direction, Layout},
+    widgets::{Chart, Widget},
+    Frame,
 };
 
 use crate::{
@@ -26,7 +28,7 @@ impl App {
         Self {
             exit: false,
             history: Vec::new(),
-            game: Game::new(loader.load_new_text()),
+            game: Game::new(&loader.load_new_text()),
             loader,
         }
     }
@@ -72,7 +74,7 @@ impl App {
 
         if self.game.done() {
             self.history.push(self.game.clone());
-            self.game = Game::new(self.loader.load_new_text());
+            self.game = Game::new(&self.loader.load_new_text());
         }
     }
 }

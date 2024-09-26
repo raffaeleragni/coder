@@ -1,8 +1,8 @@
 mod app;
 mod game;
+mod loader;
 mod text_widget;
 mod tui;
-mod loader;
 
 use app::App;
 use std::io;
