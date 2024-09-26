@@ -25,7 +25,8 @@ static TEXTS: LazyLock<Vec<String>> = LazyLock::new(|| {
         return default;
     }
     s.split("\n")
-        .filter(|s| !s.trim().is_empty())
+        .map(|s| s.trim())
+        .filter(|s| !s.is_empty())
         .map(|s| s.to_string())
         .collect::<Vec<String>>()
 });
