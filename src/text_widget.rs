@@ -50,7 +50,7 @@ fn render_single_line(line: &mut Game, area: Rect, buf: &mut Buffer) {
     Paragraph::new(text).render(l[1], buf);
 }
 
-impl<'a> From<&Game> for Vec<Span<'a>> {
+impl From<&Game> for Vec<Span<'_>> {
     fn from(game: &Game) -> Self {
         if game.done() {
             return vec![Span::from(game.target_text.clone()).bold().green()];
